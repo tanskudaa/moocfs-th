@@ -11,3 +11,16 @@ notes.md
 
 # Tehtäväpalautukset
 !/osa-0/0.*.png
+
+
+#
+# Osa 1
+#
+
+# Omat muistiinpanot
+/osa-1/*
+
+# Tehtäväpalautukset
+!/osa-1/kurssitiedot
+!/osa-1/unicafe
+!/osa-1/anekdootit
