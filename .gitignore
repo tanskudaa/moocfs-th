@@ -7,8 +7,7 @@ notes.md
 #
 
 # Mozilla HTML/CSS-tutorial -tiedostot
-/osa-0/*
-
+/osa-0/**
 # Tehtäväpalautukset
 !/osa-0/0.*.png
 
@@ -18,9 +17,11 @@ notes.md
 #
 
 # Omat muistiinpanot
-/osa-1/*
-
+/osa-1/**
 # Tehtäväpalautukset
 !/osa-1/kurssitiedot
+!/osa-1/kurssitiedot/**
 !/osa-1/unicafe
+!/osa-1/unicafe/**
 !/osa-1/anekdootit
+!/osa-1/anekdootit/**
