@@ -1,27 +1,26 @@
+## Yleiset
 # Omat muistiinpanot
 notes.md
+# React-sovellus
+/react-app
 
 
-#
-# Osa 0
-#
-
+## Osa 0
 # Mozilla HTML/CSS-tutorial -tiedostot
-/osa-0/**
+/osa-0/*
 # Tehtäväpalautukset
 !/osa-0/0.*.png
 
 
-#
-# Osa 1
-#
-
-# Omat muistiinpanot
-/osa-1/**
+## Osa 1
+# Omat muistiinpanot ja opettelukoodit
+/osa-1/*
 # Tehtäväpalautukset
 !/osa-1/kurssitiedot
-!/osa-1/kurssitiedot/**
 !/osa-1/unicafe
-!/osa-1/unicafe/**
 !/osa-1/anekdootit
-!/osa-1/anekdootit/**
+
+
+## Osa 2
+# Omat muistiinpanot ja opettelukoodit
+/osa-2/*
