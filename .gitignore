@@ -3,6 +3,7 @@
 notes.md
 # React-sovellus
 /react-app
+/react-app-def
 
 
 ## Osa 0
@@ -26,3 +27,4 @@ notes.md
 /osa-2/*
 # Tehtäväpalautukset
 !/osa-2/kurssitiedot
+!/osa-2/maiden-tiedot
