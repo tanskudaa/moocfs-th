@@ -1,19 +1,24 @@
 {
-  "posts": [
+  "persons": [
     {
-      "id": 1,
-      "title": "json-server",
-      "author": "typicode"
-    }
-  ],
-  "comments": [
+      "name": "Arto Hellas",
+      "number": "12498511212",
+      "id": 1
+    },
     {
-      "id": 1,
-      "body": "some comment",
-      "postId": 1
+      "name": "Heikki Silvennoinen",
+      "number": "125852112",
+      "id": 5
+    },
+    {
+      "name": "Taneli Hongisto",
+      "number": "12509123123",
+      "id": 7
+    },
+    {
+      "name": "Tupsula",
+      "number": "112",
+      "id": 8
     }
-  ],
-  "profile": {
-    "name": "typicode"
-  }
+  ]
 }
