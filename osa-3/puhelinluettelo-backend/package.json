@@ -1,0 +1,19 @@
+{
+  "name": "puhelinluettelo-backend",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "BROWSER=none nodemon index.js",
+    "test": "echo \"No tests specified\" && exit 1"
+  },
+  "author": "Taneli Hongisto",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
