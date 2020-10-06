@@ -99,17 +99,19 @@ const App = () => {
 
 
   useEffect(() => {
+    /*
     const doesntExist = {
       id: -1,
       name: "doesn't exist",
       number: ""
     }
+    */
 
     personService
       .getAll()
       .then(response => {
-        // setPersons(response)
-        setPersons(response.concat(doesntExist))
+        setPersons(response)
+        // setPersons(response.concat(doesntExist))
       })
   }, [])
 
