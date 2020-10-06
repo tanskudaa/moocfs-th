@@ -117,12 +117,14 @@ const App = () => {
 
   const addPerson = (e) => {
     e.preventDefault()
-    const personIndex = persons.map(a => a.name).indexOf(newName)
 
-    if  (
-          personIndex !== -1 && 
-          window.confirm(`${newName} is already added. Update number?`)
-        ) {
+    const personIndex = persons.map(a => a.name).indexOf(newName)
+    let confirmUpdate = null
+    if (personIndex !== -1) {
+      confirmUpdate = window.confirm(`${newName} is already added. Update number?`)
+    }
+
+    if (confirmUpdate === true) {
       personService
         .update(persons[personIndex].id, newNumber)
         .then(response => {
@@ -135,7 +137,7 @@ const App = () => {
         })
     }
 
-    else {
+    else if (confirmUpdate === null) {
       const newPerson = { name: newName, number: newNumber }
       personService
         .create(newPerson)
