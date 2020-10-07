@@ -78,9 +78,14 @@ const NewPersonForm = (
 
 const FilteredPersons = ({ list, keyword, deletePerson }) => {
   const filtered = list.filter(a => a.name.includes(keyword))
+  const sorted = filtered.sort((a, b) => {
+    const nameA = a.name.toLowerCase()
+    const nameB = b.name.toLowerCase()
+    return (nameA > nameB) ? 1 : -1
+  })
 
   return (
-    filtered.map(a => (
+    sorted.map(a => (
       <div key={a.id}>
         {a.name} {a.number}
         <button onClick={() => deletePerson(a)}>delete</button>
@@ -99,19 +104,16 @@ const App = () => {
 
 
   useEffect(() => {
-    /*
     const doesntExist = {
       id: -1,
       name: "doesn't exist",
       number: ""
     }
-    */
 
     personService
       .getAll()
       .then(response => {
-        setPersons(response)
-        // setPersons(response.concat(doesntExist))
+        setPersons(response.concat(doesntExist))
       })
   }, [])
 
@@ -145,6 +147,12 @@ const App = () => {
           setPersons(persons.concat(response))
           setNoticeMessage(`Added ${newName}`)
           setTimeout(() => {setNoticeMessage(null)}, 3000)
+        })
+        .catch(error => {
+          console.log(error)
+          console.log(error.response)
+          setErrorMessage(error.response.data)
+          setTimeout(() => {setErrorMessage(null)}, 3000)
         })
     }
 
