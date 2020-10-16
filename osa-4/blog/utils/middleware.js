@@ -2,9 +2,8 @@ const logger = require('./logger')
 const rfs = require('rotating-file-stream')
 
 const logFileStream = rfs.createStream('access.log', {
-  size: '10M', // Rotate every 10MB
   interval: '1d', // Rotate daily
-  path: `${__dirname}/log`
+  path: `${__dirname}/../log`
 })
 
 const requestLogger = (req, res, next) => {

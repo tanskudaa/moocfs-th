@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"No tests specified\" && exit 1",
+    "test": "jest --verbose",
     "lint": "eslint ."
   },
   "author": "Taneli Hongisto",
@@ -20,6 +20,10 @@
   "devDependencies": {
     "dotenv": "^8.2.0",
     "eslint": "^7.11.0",
+    "jest": "^26.5.3",
     "nodemon": "^2.0.5"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
