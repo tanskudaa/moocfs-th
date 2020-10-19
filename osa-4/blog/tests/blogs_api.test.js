@@ -64,6 +64,8 @@ const newBlog = {
   __v: 0
 }
 
+const getResLength = (res) => res.body.length
+
 
 beforeEach(async () => {
   await Blog.deleteMany({})
@@ -108,8 +110,6 @@ describe('POST', () => {
   })
 
   test('document count increments by one after post', async () => {
-    const getResLength = (res) => res.body.length
-
     const resBeforePost = await api.get('/api/blogs/')
     await api
       .post('/api/blogs/')
@@ -151,15 +151,45 @@ describe('POST', () => {
 
 describe('DELETE', () => {
   test('delete responds with removed document', async () => {
-    throw new Error('test not specified')
+    const expectedResponse = (new Blog(initialBlogs[0])).toJSON()
+    const res = await api.delete('/api/blogs/'+expectedResponse.id)
+    expect(res.body).toEqual(expectedResponse)
   })
 
   test('document count decreases by one after delete', async () => {
-    throw new Error('test not specified')
+    const resBeforeDelete = await api.get('/api/blogs/')
+    await api.delete('/api/blogs/'+initialBlogs[0]._id)
+    const resAfterDelete = await api.get('/api/blogs/')
+
+    expect(getResLength(resAfterDelete)).toEqual(getResLength(resBeforeDelete) - 1)
   })
 
   test('400 on invalid id', async () => {
-    throw new Error('test not specified')
+    await api
+      .delete('/api/blogs/thisIdDoesNotExist')
+      .expect(400)
+  })
+})
+
+describe('PUT', () => {
+  test('change number of likes on an entry', async () => {
+    const blog = { ...initialBlogs[0], likes: 99 }
+
+    const expectedResponse = (new Blog(blog)).toJSON()
+
+    const res = await api
+      .put('/api/blogs/'+blog._id)
+      .send(blog)
+      .expect(200)
+
+    expect(res.body).toEqual(expectedResponse)
+  })
+
+  test('400 on invalid id', async () => {
+    await api
+      .put('/api/blogs/thisIdDoesNotExist')
+      .send(initialBlogs[0])
+      .expect(400)
   })
 })
 
