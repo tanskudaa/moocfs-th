@@ -62,13 +62,14 @@ const manyBlogs = [
 ]
 
 
-test('dummy returns 1', () => {
-  const blogs = []
+describe('dummy tests', () => {
+  test('dummy returns 1', () => {
+    const blogs = []
 
-  const result = listHelper.dummy(blogs)
-  expect(result).toBe(1)
+    const result = listHelper.dummy(blogs)
+    expect(result).toBe(1)
+  })
 })
-
 
 describe('total likes', () => {
   test('when list has only one blog equals the likes of that', () => {

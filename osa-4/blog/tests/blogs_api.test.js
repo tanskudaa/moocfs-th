@@ -1,4 +1,3 @@
-// const { TestScheduler } = require('jest')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
@@ -56,20 +55,112 @@ const initialBlogs = [
   }
 ]
 
+const newBlog = {
+  _id: '5a422bc61b54a676234d17fb',
+  title: 'Type wars DUPLICATE',
+  author: 'Robert C. Martin',
+  url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
+  likes: 2,
+  __v: 0
+}
+
+
 beforeEach(async () => {
   await Blog.deleteMany({})
-
-  for (const a of initialBlogs) {
-    const blog = new Blog(a)
-    await blog.save()
-  }
+  await Blog.insertMany(initialBlogs)
 })
 
-test.only('get blogs from api with status 200 and Content-Type application/json', async () => {
-  await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
+describe('GET', () => {
+  test('get blogs from api with status 200 and Content-Type application/json', async () => {
+    await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('id is the defining field of returned documents instead of _id', async () => {
+    const res = await api.get('/api/blogs/')
+
+    res.body.forEach(blog => {
+      expect(blog.id).toBeDefined()
+      expect(blog._id).not.toBeDefined()
+    })
+  })
+})
+
+describe('POST', () => {
+  test('post new blog to api with status 201 and generated document', async () => {
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('post request responds with sent document', async () => {
+    const expectedResponse = new Blog(newBlog).toJSON()
+
+    const res = await api
+      .post('/api/blogs')
+      .send(newBlog)
+
+    expect(res.body).toEqual(expectedResponse)
+  })
+
+  test('document count increments by one after post', async () => {
+    const getResLength = (res) => res.body.length
+
+    const resBeforePost = await api.get('/api/blogs/')
+    await api
+      .post('/api/blogs/')
+      .send(newBlog)
+    const resAfterPost = await api.get('/api/blogs/')
+
+    expect(getResLength(resAfterPost)).toEqual(getResLength(resBeforePost) + 1)
+  })
+
+  test('likes default to 0 if not submitted', async () => {
+    const { likes, ...excludeLikes } = newBlog
+
+    const res = await api
+      .post('/api/blogs/')
+      .send(excludeLikes)
+
+    expect(res.body.likes).toBeDefined()
+    expect(res.body.likes).toBe(0)
+  })
+
+  test('no title on submission returns 400', async () => {
+    const { title, ...excludeTitle } = newBlog
+
+    await api
+      .post('/api/blogs/')
+      .send(excludeTitle)
+      .expect(400)
+  })
+
+  test('no url on submission returns 400', async () => {
+    const { url, ...excludeUrl } = newBlog
+
+    await api
+      .post('/api/blogs/')
+      .send(excludeUrl)
+      .expect(400)
+  })
+})
+
+describe('DELETE', () => {
+  test('delete responds with removed document', async () => {
+    throw new Error('test not specified')
+  })
+
+  test('document count decreases by one after delete', async () => {
+    throw new Error('test not specified')
+  })
+
+  test('400 on invalid id', async () => {
+    throw new Error('test not specified')
+  })
 })
 
 afterAll(() => mongoose.connection.close())

@@ -10,7 +10,6 @@ const Notice = ({ message }) => {
       </div>
     )
   }
-
   else {
     return null
   }
@@ -24,7 +23,6 @@ const Error = ({ message }) => {
       </div>
     )
   }
-
   else {
     return null
   }
