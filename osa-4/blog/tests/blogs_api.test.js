@@ -66,7 +66,6 @@ const newBlog = {
 
 const getResLength = (res) => res.body.length
 
-
 beforeEach(async () => {
   await Blog.deleteMany({})
   await Blog.insertMany(initialBlogs)
@@ -172,6 +171,13 @@ describe('DELETE', () => {
 })
 
 describe('PUT', () => {
+  test('400 on invalid id', async () => {
+    await api
+      .put('/api/blogs/thisIdDoesNotExist')
+      .send(initialBlogs[0])
+      .expect(400)
+  })
+
   test('change number of likes on an entry', async () => {
     const blog = { ...initialBlogs[0], likes: 99 }
 
@@ -183,13 +189,6 @@ describe('PUT', () => {
       .expect(200)
 
     expect(res.body).toEqual(expectedResponse)
-  })
-
-  test('400 on invalid id', async () => {
-    await api
-      .put('/api/blogs/thisIdDoesNotExist')
-      .send(initialBlogs[0])
-      .expect(400)
   })
 })
 
