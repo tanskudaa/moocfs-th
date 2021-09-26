@@ -66,6 +66,8 @@ describe('dummy tests', () => {
   test('dummy returns 1', () => {
     const blogs = []
 
+    console.log("dummy test")
+
     const result = listHelper.dummy(blogs)
     expect(result).toBe(1)
   })
