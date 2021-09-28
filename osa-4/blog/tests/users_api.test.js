@@ -35,7 +35,7 @@ beforeEach(async () => {
 })
 
 describe('GET', () => {
-  test.only('get all users returns with 201 and js object', async () => {
+  test('get all users returns with 201 and js object', async () => {
     await api
       .get('/api/users')
       .expect(200)
@@ -61,7 +61,7 @@ describe('POST', () => {
       .expect(400)
   })
 
-  test('empty password gets declined', async () => {
+  test('empty password gets declined, test 1', async () => {
     const { password, ...badUser } = newUser
 
     await api
@@ -70,7 +70,7 @@ describe('POST', () => {
       .expect(400)
   })
 
-  test('empty username gets declined', async () => {
+  test('empty username gets declined, test 2', async () => {
     const { username, ...badUser } = newUser
 
     await api
@@ -79,7 +79,7 @@ describe('POST', () => {
       .expect(400)
   })
 
-  test('empty username gets declined', async () => {
+  test('empty username gets declined, test 3', async () => {
     const badUser = { ...newUser, username: 'me' }
 
     await api
@@ -88,7 +88,7 @@ describe('POST', () => {
       .expect(400)
   })
 
-  test.only('duplicate username gets declined', async () => {
+  test('duplicate username gets declined', async () => {
     let res = await api
       .post('/api/users')
       .send(newUser)

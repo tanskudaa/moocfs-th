@@ -1,9 +1,7 @@
 require('express-async-errors')
-const jwt = require('jsonwebtoken')
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
-const log = require('../utils/logger')
 
 blogsRouter.get('/', async (req, res) => {
   const blogs = await Blog
@@ -19,33 +17,55 @@ blogsRouter.get('/:id', async (req, res) => {
 })
 
 blogsRouter.post('/', async (req, res) => {
-  const decodedToken = jwt.verify(req.body.token, process.env.SECRET)
-  const user = await User.findById(decodedToken.id)
-  const blog = new Blog({ ...req.body, user })
+  if (typeof req.user !== 'undefined') {
+    const blog = new Blog({ ...req.body, user: req.user })
 
-  const result = await blog.save()
-  res.status(201).json(result)
-})
+    const result = await blog.save()
 
-// TODO Update to token
-blogsRouter.delete('/:id', async (req, res) => {
-  const blog = await Blog.findByIdAndRemove(req.params.id)
-  res.json(blog.toJSON())
-})
+    req.user.blogs.push(result.id)
+    await User.findByIdAndUpdate(req.user.id, { blogs: req.user.blogs })
 
-// TODO Update to token
-blogsRouter.put('/:id', async (req, res) => {
-  const body = req.body
-
-  const blog = {
-    title: body.title,
-    author: body.author,
-    url: body.url,
-    likes: body.likes
+    res.status(201).json(result)
   }
+  else {
+    res.status(401).json({ error: 'invalid token' })
+  }
+})
 
-  const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, blog, { new: true })
-  res.json(updatedBlog.toJSON())
+blogsRouter.delete('/:id', async (req, res) => {
+  const blog = await Blog.findById(req.params.id)
+
+  if (typeof req.user !== 'undefined' && req.user.id.toString() === blog.user.toString()) {
+    await Blog.findByIdAndRemove(blog.id)
+    await User.findByIdAndUpdate(
+      req.user.id, 
+      { blogs: req.user.blogs.filter(a => a.toString() !== blog.id.toString()) }
+    )
+
+    res.json(blog.toJSON())
+  }
+  else {
+    res.status(401).json({ error: 'invalid token' })
+  }
+})
+
+blogsRouter.put('/:id', async (req, res) => {
+  const blog = await Blog.findById(req.params.id)
+
+  if (typeof req.user !== 'undefined' && req.user.id.toString() === blog.user.toString()) {
+    const blog = {
+      title: req.body.title,
+      author: req.body.author,
+      url: req.body.url,
+      likes: req.body.likes
+    }
+
+    const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, blog, { new: true })
+    res.json(updatedBlog.toJSON())
+  }
+  else {
+    res.status(401).json({ error: 'invalid token' })
+  }
 })
 
 module.exports = blogsRouter

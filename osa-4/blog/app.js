@@ -14,8 +14,10 @@ logger.info('Connecting to MongoDB...')
 mongoose.connect(config.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useFindAndModify: false,
-  useCreateIndex: true
+  // NOTE These commented out due to Windows environment not being able to connect with them.
+  // Appareantly they're deprecated on MongoDB's side, but linux environments connect fine with them.
+  // useFindAndModify: false,
+  // useCreateIndex: true
 })
   .then(() => logger.info('Successfully connected to MongoDB'))
   .catch((error) => logger.error('Error connecting to MongoDB:', error.message))
@@ -27,7 +29,7 @@ app.use(express.json())
 app.use(middleware.requestLogger)
 app.use(middleware.tokenExtractor)
 
-app.use('/api/blogs', blogsRouter)
+app.use('/api/blogs', middleware.userExtractor, blogsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
 

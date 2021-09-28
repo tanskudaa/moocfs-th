@@ -3,6 +3,23 @@ const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const User = require('../models/user')
+
+const initialUser = {
+  _id: '6150b2577f55c34d291172e1',
+  username: 'tiara',
+  name: 'Belle',
+  passwordHash: '$2b$10$oNLxwdGJ8I/N5Bqz/to3w.FojX08vETD5L6sLYcOJGkUlxhtkaGCe',
+  blogs: [
+    '5a422a851b54a676234d17f7',
+    '5a422aa71b54a676234d17f8',
+    '5a422aa71b54a676234d17f9',
+    '5a422aa71b54a676234d17fa',
+    '5a422aa71b54a676234d17fb',
+    '5a422aa71b54a676234d17fc'
+  ],
+  __v: 0
+}
 
 const initialBlogs = [
   {
@@ -10,6 +27,7 @@ const initialBlogs = [
     title: 'React patterns',
     author: 'Michael Chan',
     url: 'https://reactpatterns.com/',
+    user: '6150b2577f55c34d291172e1',
     likes: 7, // Total 7
     __v: 0
   },
@@ -18,6 +36,7 @@ const initialBlogs = [
     title: 'Go To Statement Considered Harmful',
     author: 'Edsger W. Dijkstra',
     url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+    user: '6150b2577f55c34d291172e1',
     likes: 5, // Total 12
     __v: 0
   },
@@ -26,6 +45,7 @@ const initialBlogs = [
     title: 'Canonical string reduction',
     author: 'Edsger W. Dijkstra',
     url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+    user: '6150b2577f55c34d291172e1',
     likes: 12, // Total 24, most likes
     __v: 0
   },
@@ -34,6 +54,7 @@ const initialBlogs = [
     title: 'First class tests',
     author: 'Robert C. Martin',
     url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
+    user: '6150b2577f55c34d291172e1',
     likes: 10, // Total 34
     __v: 0
   },
@@ -42,6 +63,7 @@ const initialBlogs = [
     title: 'TDD harms architecture',
     author: 'Robert C. Martin',
     url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
+    user: '6150b2577f55c34d291172e1',
     likes: 0, // Total 34
     __v: 0
   },
@@ -50,13 +72,14 @@ const initialBlogs = [
     title: 'Type wars',
     author: 'Robert C. Martin',
     url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
+    user: '6150b2577f55c34d291172e1',
     likes: 2, // Total 36
     __v: 0
   }
 ]
 
 const newBlog = {
-  _id: '5a422bc61b54a676234d17fb',
+  _id: '5a422bc61b54a676234d17fd',
   title: 'Type wars DUPLICATE',
   author: 'Robert C. Martin',
   url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
@@ -64,11 +87,14 @@ const newBlog = {
   __v: 0
 }
 
+const tokenString = 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1WTSIsImlkIjoiNjE1MGIyNTc3ZjU1YzM0ZDI5MTE3MmUxIiwiaWF0IjoxNjMyNzU0NDcyfQ.Oqm6oJ_Ks9ZlbUwb4Z4qsNTQOp6_--mvtcYijCzzxFY'
 const getResLength = (res) => res.body.length
 
 beforeEach(async () => {
   await Blog.deleteMany({})
   await Blog.insertMany(initialBlogs)
+  await User.deleteMany({})
+  await User.insertMany([initialUser])
 })
 
 describe('GET', () => {
@@ -93,16 +119,20 @@ describe('POST', () => {
   test('post new blog to api with status 201 and generated document', async () => {
     await api
       .post('/api/blogs')
+      .set('authorization', tokenString)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
   })
 
   test('post request responds with sent document', async () => {
-    const expectedResponse = new Blog(newBlog).toJSON()
+    const user = await User.findById(initialUser._id)
+    user.blogs.push(newBlog._id)
+    const expectedResponse = JSON.parse(JSON.stringify(new Blog({ ...newBlog, user })))
 
     const res = await api
       .post('/api/blogs')
+      .set('authorization', tokenString)
       .send(newBlog)
 
     expect(res.body).toEqual(expectedResponse)
@@ -112,6 +142,7 @@ describe('POST', () => {
     const resBeforePost = await api.get('/api/blogs/')
     await api
       .post('/api/blogs/')
+      .set('authorization', tokenString)
       .send(newBlog)
     const resAfterPost = await api.get('/api/blogs/')
 
@@ -123,6 +154,7 @@ describe('POST', () => {
 
     const res = await api
       .post('/api/blogs/')
+      .set('authorization', tokenString)
       .send(excludeLikes)
 
     expect(res.body.likes).toBeDefined()
@@ -134,6 +166,7 @@ describe('POST', () => {
 
     await api
       .post('/api/blogs/')
+      .set('authorization', tokenString)
       .send(excludeTitle)
       .expect(400)
   })
@@ -143,48 +176,104 @@ describe('POST', () => {
 
     await api
       .post('/api/blogs/')
+      .set('authorization', tokenString)
       .send(excludeUrl)
       .expect(400)
+  })
+
+  test('401 on no token', async () => {
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+  })
+
+  test('401 on invalid token', async () => {
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .set('authorization', tokenString.replace('1', '2'))
+      .expect(401)
   })
 })
 
 describe('DELETE', () => {
   test('delete responds with removed document', async () => {
-    const expectedResponse = (new Blog(initialBlogs[0])).toJSON()
-    const res = await api.delete('/api/blogs/'+expectedResponse.id)
+    const expectedResponse = JSON.parse(JSON.stringify(new Blog(initialBlogs[0])))
+    const res = await api
+      .delete('/api/blogs/'+expectedResponse.id)
+      .set('authorization', tokenString)
+
     expect(res.body).toEqual(expectedResponse)
   })
 
   test('document count decreases by one after delete', async () => {
-    const resBeforeDelete = await api.get('/api/blogs/')
-    await api.delete('/api/blogs/'+initialBlogs[0]._id)
-    const resAfterDelete = await api.get('/api/blogs/')
+    const resBeforeDelete = await api.get('/api/blogs')
+    await api
+      .delete('/api/blogs/'+initialBlogs[0]._id)
+      .set('authorization', tokenString)
+    const resAfterDelete = await api.get('/api/blogs')
 
     expect(getResLength(resAfterDelete)).toEqual(getResLength(resBeforeDelete) - 1)
   })
 
   test('400 on invalid id', async () => {
     await api
-      .delete('/api/blogs/thisIdDoesNotExist')
+      .delete('/api/blogs/thisIsNotAValidObjectID')
       .expect(400)
+  })
+
+  test('401 on no token', async () => {
+    await api
+      .delete('/api/blogs/'+initialBlogs[0]._id)
+      .expect(401)
+  })
+
+  test('401 on invalid token', async () => {
+    await api
+      .delete('/api/blogs/'+initialBlogs[0]._id)
+      .set('authorization', tokenString.replace('1', '2'))
+      .expect(401)
   })
 })
 
 describe('PUT', () => {
   test('400 on invalid id', async () => {
+    const blog = { ...initialBlogs[0], likes: 99 }
+
     await api
-      .put('/api/blogs/thisIdDoesNotExist')
-      .send(initialBlogs[0])
+      .put('/api/blogs/thisIsNotAValidObjectID')
+      .send(blog)
       .expect(400)
+  })
+
+  test('401 on no token', async () => {
+    const blog = { ...initialBlogs[0], likes: 99 }
+
+    await api
+      .put('/api/blogs/'+blog._id)
+      .send(blog)
+      .expect(401)
+  })
+
+  test('401 on invalid token', async () => {
+    const blog = { ...initialBlogs[0], likes: 99 }
+
+    await api
+      .put('/api/blogs/'+blog._id)
+      .set('authorization', tokenString.replace('1', '2'))
+      .send(blog)
+      .expect(401)
   })
 
   test('change number of likes on an entry', async () => {
     const blog = { ...initialBlogs[0], likes: 99 }
 
-    const expectedResponse = (new Blog(blog)).toJSON()
+    const expectedResponse = JSON.parse(JSON.stringify(new Blog(blog)))
 
     const res = await api
       .put('/api/blogs/'+blog._id)
+      .set('authorization', tokenString)
       .send(blog)
       .expect(200)
 
