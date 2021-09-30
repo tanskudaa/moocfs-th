@@ -15,9 +15,9 @@ const Blog = ({ blog, user, handleDeleteBlog, handleLikeBlog }) => {
   }
 
   return (
-    <div>
+    <div className='blog'>
       <i>{blog.title}</i> {blog.author}
-      <button onClick={() => setShowMore(!showMore)}>View</button>
+      <button className="blog__expand-button" onClick={() => setShowMore(!showMore)}>View</button>
       { showMore === true
 
         ?
@@ -32,7 +32,7 @@ const Blog = ({ blog, user, handleDeleteBlog, handleLikeBlog }) => {
           </li>
           <li>
             likes {blog.likes}
-            <button onClick={handleLike}>Like</button>
+            <button className="blog__like-button" onClick={handleLike}>Like</button>
           </li>
           <li>{blog.author}</li>
           {

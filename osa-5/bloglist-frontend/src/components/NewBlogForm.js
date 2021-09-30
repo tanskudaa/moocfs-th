@@ -26,6 +26,7 @@ const NewBlogForm = ({ handlePostBlog }) => {
               <div>
                 Title:
                 <input
+                  id="title"
                   type="text"
                   name="title"
                   value={title}
@@ -35,6 +36,7 @@ const NewBlogForm = ({ handlePostBlog }) => {
               <div>
                 Author:
                 <input
+                  id="author"
                   type="text"
                   name="author"
                   value={author}
@@ -44,19 +46,20 @@ const NewBlogForm = ({ handlePostBlog }) => {
               <div>
                 URL:
                 <input
+                  id="url"
                   type="text"
                   name="url"
                   value={url}
                   onChange={({ target }) => setUrl(target.value)}
                 />
               </div>
-              <button type="submit">Post</button>
+              <button className="new-blog-form__submit-button" type="submit">Post</button>
             </form>
           </>
         ) : null
       }
 
-      <button onClick={() => setVisible(!visible)}>
+      <button className="new-blog-form__expand-button" onClick={() => setVisible(!visible)}>
         {
           visible
             ? 'Cancel'
