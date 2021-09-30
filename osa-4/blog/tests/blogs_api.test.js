@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
@@ -247,6 +248,16 @@ describe('PUT', () => {
       .expect(400)
   })
 
+  test('201 on valid put', async () => {
+    const blog = { ...initialBlogs[0], likes: 99 }
+
+    await api
+      .put('/api/blogs/'+blog._id)
+      .send(blog)
+      .expect(201)
+  })
+
+  /*
   test('401 on no token', async () => {
     const blog = { ...initialBlogs[0], likes: 99 }
 
@@ -265,17 +276,18 @@ describe('PUT', () => {
       .send(blog)
       .expect(401)
   })
+  */
 
   test('change number of likes on an entry', async () => {
+    const user = await User.findById(initialUser._id)
+    user.blogs = undefined
     const blog = { ...initialBlogs[0], likes: 99 }
 
-    const expectedResponse = JSON.parse(JSON.stringify(new Blog(blog)))
+    const expectedResponse = JSON.parse(JSON.stringify(new Blog({ ...blog, user })))
 
     const res = await api
       .put('/api/blogs/'+blog._id)
-      .set('authorization', tokenString)
       .send(blog)
-      .expect(200)
 
     expect(res.body).toEqual(expectedResponse)
   })

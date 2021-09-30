@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
@@ -93,14 +94,10 @@ describe('POST', () => {
       .post('/api/users')
       .send(newUser)
 
-    console.log(res.body)
-
     res = await api
       .post('/api/users')
       .send(newUser)
       .expect(400)
-
-    console.log(res.error)
   })
 })
 

@@ -1,13 +1,8 @@
 ## Yleiset
-# node_modules
 node_modules
-
-# .env (ei ikinä ikinä Githubiin)
 .env
-
-# REST-testipyynnöt
-*.rest
-
-# Logit
 log
 *.log
+*.rest
+
+misc
