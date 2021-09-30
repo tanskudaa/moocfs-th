@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const NewBlogForm = ({ handlePostBlog }) => {
   const [visible, setVisible] = useState(false)
@@ -64,6 +65,10 @@ const NewBlogForm = ({ handlePostBlog }) => {
       </button>
     </div>
   )
+}
+
+NewBlogForm.propTypes = {
+  handlePostBlog: PropTypes.func.isRequired
 }
 
 export default NewBlogForm
