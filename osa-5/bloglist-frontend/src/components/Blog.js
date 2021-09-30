@@ -5,7 +5,8 @@ const Blog = ({ blog, user, handleDeleteBlog, handleLikeBlog }) => {
 
   const handleRemove = (event) => {
     event.preventDefault()
-    handleDeleteBlog(blog)
+    const confirmed = window.confirm(`Really delete ${blog.name} by ${blog.author}?`)
+    if (confirmed) handleDeleteBlog(blog)
   }
 
   const handleLike = (event) => {
