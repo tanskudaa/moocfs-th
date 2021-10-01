@@ -37,7 +37,7 @@ const Blog = ({ blog, user, handleDeleteBlog, handleLikeBlog }) => {
           <li>{blog.author}</li>
           {
             blog.user.username === user.username
-              ? <li><button onClick={handleRemove}>Delete blog</button></li>
+              ? <li><button className="blog__delete-button" onClick={handleRemove}>Delete blog</button></li>
               : null
           }
         </ul>
