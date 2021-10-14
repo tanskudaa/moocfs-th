@@ -1,6 +1,4 @@
 const initialState = null
-// NOTE Is --
-const notificationTimeoutDelay = 5000
 var timeoutID = null
 
 const notificationReducer = (state = initialState, action) => {
@@ -14,18 +12,18 @@ const notificationReducer = (state = initialState, action) => {
   }
 }
 
-export const createNotificationWithTimeout = (notification, dispatch) => {
-  // NOTE -- this --
-  if (timeoutID) clearTimeout(timeoutID)
-  timeoutID = setTimeout(() => {
-    // NOTE -- illegal?
-    dispatch(resetNotification())
-    timeoutID = null
-  }, notificationTimeoutDelay)
+export const createNotification = (notification, timeoutSeconds = 3) => {
+  return async dispatch => {
+    if (timeoutID) clearTimeout(timeoutID)
+    timeoutID = setTimeout(() => {
+      dispatch(resetNotification())
+      timeoutID = null
+    }, timeoutSeconds * 1000)
 
-  return {
-    type: 'SET_NOTIFICATION',
-    data: { notification }
+    dispatch({
+      type: 'SET_NOTIFICATION',
+      data: { notification }
+    })
   }
 }
 
