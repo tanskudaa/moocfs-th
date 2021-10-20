@@ -13,13 +13,7 @@ const loginRouter = require('./controllers/login')
 logger.info('Connecting to MongoDB...')
 mongoose.connect(config.MONGODB_URI, {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
-  /*
-   * NOTE These commented out due to Windows environment not being able to connect with them.
-   * Appareantly they're deprecated on MongoDB's side, but linux environments connect fine with them.
-   */
-  // useFindAndModify: false,
-  // useCreateIndex: true
+  useUnifiedTopology: true
 })
   .then(() => logger.info('Successfully connected to MongoDB'))
   .catch((error) => logger.error('Error connecting to MongoDB:', error.message))
