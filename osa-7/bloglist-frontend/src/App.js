@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { Switch, Route, Redirect } from 'react-router-dom'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
-import Blog from './components/Blog'
-import NewBlogForm from './components/NewBlogForm'
-import { createNotification } from './reducers/notificationReducer'
+import AllBlogs from './components/AllBlogs'
+import AllUsers from './components/AllUsers'
+import UserInfo from './components/UserInfo'
 import { initializeBlogs } from './reducers/blogsReducer'
 import { setUser, resetUser } from './reducers/userReducer'
+import { createNotification } from './reducers/notificationReducer'
 
 const App = () => {
-  const blogs = useSelector(state => state.blogs)
   const user = useSelector(state => state.user)
   const dispatch = useDispatch()
 
@@ -30,36 +31,30 @@ const App = () => {
     <div>
       <h2>Blogs app</h2>
       <Notification />
-      {
-        user === null
-          ? (
-            <>
-              <LoginForm />
-            </>
-          )
-          : (
-            <>
-              <h2>Blogs app</h2>
-              <div>
-                Logged in as {user.name}
-                <button onClick={handleLogout}>Logout</button>
-              </div>
-              <div>
-                <NewBlogForm />
-                <h3>All blogs</h3>
-                {blogs
-                  .sort((e1, e2) => e2.likes - e1.likes)
-                  .map(blog => (
-                    <Blog
-                      key={blog.id}
-                      blog={blog}
-                    />)
-                  )
-                }
-              </div>
-            </>
-          )
+      { user &&
+        <div>
+          Logged in as {user.name}
+          <button onClick={handleLogout}>Logout</button>
+        </div>
       }
+
+      <Switch>
+        <Route exact path="/" >
+          { !user ? <LoginForm /> : <AllBlogs /> }
+        </Route>
+
+        <Route path="/users/:id" >
+          <UserInfo />
+        </Route>
+
+        <Route path="/users" >
+          <AllUsers />
+        </Route>
+
+        <Route> {/* 404 */}
+          <Redirect to="/" />
+        </Route>
+      </Switch>
     </div>
   )
 }
