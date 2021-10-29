@@ -1,7 +1,12 @@
 import React, { useState } from 'react'
 import loginService from '../services/login'
+import { useDispatch } from 'react-redux'
+import { createNotification, resetNotification } from '../reducers/notificationReducer'
+import { setUser } from '../reducers/userReducer'
 
-const LoginForm = ({ setUser, displayError, clearNotifications }) => {
+const LoginForm = () => {
+  const dispatch = useDispatch()
+
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -15,11 +20,11 @@ const LoginForm = ({ setUser, displayError, clearNotifications }) => {
       window.localStorage.setItem('loggedBlogsUser', JSON.stringify(user))
       setUsername('')
       setPassword('')
-      setUser(user)
-      clearNotifications()
+      dispatch(setUser(user))
+      dispatch(resetNotification())
     }
     catch (exception) {
-      displayError('Wrong username or password!')
+      dispatch(createNotification('Wrong username or password!', true))
     }
   }
 

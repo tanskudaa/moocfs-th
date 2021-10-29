@@ -1,17 +1,26 @@
 import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { createNotification } from '../reducers/notificationReducer'
+import { likeBlog, deleteBlog } from '../reducers/blogsReducer'
 
-const Blog = ({ blog, user, handleDeleteBlog, handleLikeBlog }) => {
+const Blog = ({ blog }) => {
+  const user = useSelector(state => state.user)
+  const dispatch = useDispatch()
+
   const [showMore, setShowMore] = useState(false)
 
   const handleRemove = (event) => {
     event.preventDefault()
     const confirmed = window.confirm(`Really delete ${blog.name} by ${blog.author}?`)
-    if (confirmed) handleDeleteBlog(blog)
+    if (confirmed) {
+      dispatch(deleteBlog(blog, user.token))
+      dispatch(createNotification(`Deleted blog "${blog.title}"`))
+    }
   }
 
   const handleLike = (event) => {
     event.preventDefault()
-    handleLikeBlog(blog)
+    dispatch(likeBlog(blog))
   }
 
   return (
