@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { useParams } from 'react-router'
 import userService from '../services/users'
 
@@ -23,7 +24,9 @@ const UserInfo = () => {
       <ul>
         {
           userToShow.blogs.map(b => (
-            <li key={b.id}>{b.title} by {b.author}</li>
+            <li key={b.id}>
+              <Link to={`/blog/${b.id}`}>{b.title} by {b.author}</Link>
+            </li>
           ))
         }
       </ul>

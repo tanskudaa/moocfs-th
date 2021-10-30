@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import Blog from './Blog'
+import { Link } from 'react-router-dom'
 import NewBlogForm from './NewBlogForm'
 
 const AllBlogs = () => {
@@ -13,7 +13,13 @@ const AllBlogs = () => {
       {
         blogs
           .sort((a,b) => b.likes - a.likes)
-          .map(blog => (<Blog key={blog.id} blog={blog} />))
+          .map(blog => (
+            <div key={blog.id}>
+              <Link to={`/blog/${blog.id}`}>
+                {blog.title} by {blog.author}
+              </Link>
+            </div>
+          ))
       }
     </div>
   )
