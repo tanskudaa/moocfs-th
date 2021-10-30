@@ -32,6 +32,19 @@ blogsRouter.post('/', async (req, res) => {
   }
 })
 
+blogsRouter.post('/:id/comment', async (req, res) => {
+  if (!req.body.comment || req.body.comment.length === 0) {
+    res.status(401).json({ error: 'no comment' })
+  }
+
+  const blog = await Blog.findById(req.params.id)
+  blog.comments.push(req.body.comment)
+
+  await Blog.findByIdAndUpdate(req.params.id, blog)
+
+  res.status(201).json({ comment: req.body.comment })
+})
+
 blogsRouter.delete('/:id', async (req, res) => {
   const blog = await Blog.findById(req.params.id)
 
@@ -54,23 +67,18 @@ blogsRouter.put('/:id', async (req, res) => {
    * NOTE Anyone can PUT anything into any blog if they know the blog ID.
    * But that's how the exercise goes, so whatever.
    */
-  // const blog = await Blog.findById(req.params.id)
-  // if (typeof req.user !== 'undefined' && req.user.id.toString() === blog.user.toString()) {
   const blog = {
     title: req.body.title,
     author: req.body.author,
     url: req.body.url,
-    likes: req.body.likes
+    likes: req.body.likes,
+    comments: req.body.comments
   }
 
   const updatedBlog = await Blog
     .findByIdAndUpdate(req.params.id, blog, { new: true })
     .populate('user', { username: 1, name: 1 })
   res.status(201).json(updatedBlog.toJSON())
-  // }
-  // else {
-  //   res.status(401).json({ error: 'invalid token' })
-  // }
 })
 
 module.exports = blogsRouter
