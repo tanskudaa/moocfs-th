@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Input, CommentList, Comment, CommentForm } from './StyledComponents'
 import { useParams } from 'react-router'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
@@ -73,27 +74,30 @@ const Blog = () => {
           { blog.comments.length > 0
 
             ?
-            <ul>
-              { blog.comments.map((comment, i) => (
-                <li key={`${blog.id}-comment-${i}`}>
-                  {comment}
-                </li>
-              ))}
-            </ul>
+            <CommentList>
+              { blog
+                .comments
+                .map((comment, i) =>
+                  <Comment key={`${blog.id}-comment-${i}`}>
+                    {comment}
+                  </Comment>
+                )
+              }
+            </CommentList>
 
             :
             <div>No comments. Be the first one to comment!</div>
           }
           <form onSubmit={handleNewComment}>
-            <div>
+            <CommentForm>
               Comment
-              <input
+              <Input
                 type="text"
                 value={newComment}
                 onChange={({ target }) => setNewComment(target.value)}
               />
               <button type="submit">Post</button>
-            </div>
+            </CommentForm>
           </form>
         </li>
       </ul>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Input } from './StyledComponents'
 import loginService from '../services/login'
 import { useDispatch } from 'react-redux'
 import { createNotification, resetNotification } from '../reducers/notificationReducer'
@@ -33,7 +34,7 @@ const LoginForm = () => {
       <form onSubmit={handleLogin}>
         <div>
           Username:
-          <input
+          <Input
             id="username"
             type="text"
             value={username}

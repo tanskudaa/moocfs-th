@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Input } from './StyledComponents'
 import { useDispatch, useSelector } from 'react-redux'
 import { createNotification } from '../reducers/notificationReducer'
 import { createBlog } from '../reducers/blogsReducer'
@@ -31,7 +32,7 @@ const NewBlogForm = () => {
             <form onSubmit={handleSubmit} >
               <div>
                 Title:
-                <input
+                <Input
                   id="title"
                   type="text"
                   name="title"
@@ -41,7 +42,7 @@ const NewBlogForm = () => {
               </div>
               <div>
                 Author:
-                <input
+                <Input
                   id="author"
                   type="text"
                   name="author"
@@ -51,7 +52,7 @@ const NewBlogForm = () => {
               </div>
               <div>
                 URL:
-                <input
+                <Input
                   id="url"
                   type="text"
                   name="url"
