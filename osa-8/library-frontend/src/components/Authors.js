@@ -2,18 +2,18 @@ import React, { useState, useEffect } from 'react'
 import { useLazyQuery, useMutation } from '@apollo/client'
 import { ALL_AUTHORS, SET_BIRTH_YEAR } from '../queries'
 
-const Authors = (props) => {
+const Authors = props => {
   if (!props.show) {
     return null
   }
 
-  const [ setBirthYear ] = useMutation(SET_BIRTH_YEAR, {
+  const [setBirthYear] = useMutation(SET_BIRTH_YEAR, {
     refetchQueries: [{ query: ALL_AUTHORS }]
   })
-  const [ getAuthors, queryResult ] = useLazyQuery(ALL_AUTHORS)
-  const [ authors, setAuthors ] = useState([])
-  const [ inputName, setInputName ] = useState('')
-  const [ inputYear, setInputYear ] = useState('')
+  const [getAuthors, queryResult] = useLazyQuery(ALL_AUTHORS)
+  const [authors, setAuthors] = useState([])
+  const [inputName, setInputName] = useState('')
+  const [inputYear, setInputYear] = useState('')
 
   useEffect(() => {
     getAuthors()
@@ -27,10 +27,12 @@ const Authors = (props) => {
     if (authors.length > 0 && inputName === '') setInputName(authors[0].name)
   }, [authors])
 
-  const handleBornSubmit = (event) => {
+  const handleBornSubmit = event => {
     event.preventDefault()
 
-    setBirthYear({ variables: { name: inputName, setBornTo: parseInt(inputYear) } })
+    setBirthYear({
+      variables: { name: inputName, setBornTo: parseInt(inputYear) }
+    })
     // Don't update inputName, uses <select>
     // setInputName('')
     setInputYear('')
@@ -47,13 +49,13 @@ const Authors = (props) => {
               <th>born</th>
               <th>books</th>
             </tr>
-            {authors.map(a =>
+            {authors.map(a => (
               <tr key={a.name}>
                 <td>{a.name}</td>
                 <td>{a.born}</td>
                 <td>{a.bookCount}</td>
               </tr>
-            )}
+            ))}
           </tbody>
         </table>
       </div>
@@ -70,10 +72,13 @@ const Authors = (props) => {
                     value={inputName}
                     onChange={({ target }) => setInputName(target.value)}
                   /> */}
-                  <select value={inputName} onChange={({ target }) => setInputName(target.value)}>
-                    {authors.map(a =>
+                  <select
+                    value={inputName}
+                    onChange={({ target }) => setInputName(target.value)}
+                  >
+                    {authors.map(a => (
                       <option key={a.name}>{a.name}</option>
-                    )}
+                    ))}
                   </select>
                 </td>
               </tr>
