@@ -71,10 +71,16 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    // eslint-disable-next-line no-unused-vars
     allBooks: async (root, args) => {
-      // TODO args (author, genre)
-      const books = await Book.find({}).populate('author')
+      const authorToSearch = args.author
+        ? await Author.findOne({ name: args.author }).lean()
+        : null
+
+      const mongoQuery = {}
+      if (authorToSearch) mongoQuery.author = authorToSearch._id
+      if (args.genre) mongoQuery.genres = { $all: [args.genre] }
+
+      const books = await Book.find(mongoQuery).populate('author')
       return books
     },
 
