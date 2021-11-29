@@ -13,7 +13,7 @@
   "author": "Taneli Hongisto",
   "license": "MIT",
   "dependencies": {
-    "apollo-server": "^3.5.0",
+    "apollo-server": "^2.25.2",
     "dotenv": "^10.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.13",

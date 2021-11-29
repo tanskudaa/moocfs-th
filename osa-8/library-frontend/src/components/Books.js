@@ -15,7 +15,6 @@ const Books = props => {
   useEffect(() => {
     const vars =
       genreFilter !== 'all' ? { variables: { genre: genreFilter } } : null
-    console.log(vars)
     getBooks(vars)
   }, [genreFilter])
 
