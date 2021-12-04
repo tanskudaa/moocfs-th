@@ -5,7 +5,11 @@ type Fields = {
     dateOfBirth: unknown,
     ssn: unknown,
     gender: unknown,
-    occupation: unknown
+    occupation: unknown,
+    /*
+     * TODO
+     */
+    // entries: unknown
 };
 
 const isString = (param: unknown): param is string => {
@@ -51,6 +55,10 @@ const toNewPatientEntry =
             ssn: parseSsn(ssn),
             gender: parseGender(gender),
             occupation: parseOccupation(occupation),
+            /*
+             * TODO
+             */
+            entries: []
         };
 
         return newEntry;

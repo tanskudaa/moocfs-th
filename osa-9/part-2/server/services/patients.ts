@@ -21,6 +21,10 @@ const removeSensitiveInfo = (p: PatientEntry): NonSensitivePatientEntry => {
 
 const getEntries = (): Array<PatientEntry> => patients;
 
+const getEntryById = (id: string): PatientEntry | undefined => {
+    return patients.find(p => p.id === id);
+};
+
 const getNonSensitiveEntries = (): NonSensitivePatientEntry[] => {
     return patients.map((a: PatientEntry) => removeSensitiveInfo(a));
 };
@@ -32,4 +36,4 @@ const addEntry = (params: Omit<PatientEntry, 'id'>): NonSensitivePatientEntry =>
 };
 
 
-export default { getEntries, getNonSensitiveEntries, addEntry };
+export default { getEntries, getEntryById, getNonSensitiveEntries, addEntry };

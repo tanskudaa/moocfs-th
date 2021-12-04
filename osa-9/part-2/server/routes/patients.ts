@@ -7,6 +7,19 @@ router.get('/', (_req, res) => {
     res.json(patientService.getNonSensitiveEntries());
 });
 
+router.get('/:id', (req, res) => {
+    const result = patientService.getEntryById(req.params.id);
+
+    /*
+     * TODO It MIGHT make sense to return undefined on invalid id (e.g. always
+     * return result)?
+     */
+    res.json(result
+        ? result
+        : { error: 'invalid id' }
+    );
+});
+
 router.post('/', (req, res) => {
     /*
      * TODO Has no sensible response for error
