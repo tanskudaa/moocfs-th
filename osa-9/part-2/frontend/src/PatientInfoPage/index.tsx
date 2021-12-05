@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, SemanticICONS } from 'semantic-ui-react';
+import { Divider, Icon, SemanticICONS } from 'semantic-ui-react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Patient, Gender } from '../types';
@@ -7,7 +7,7 @@ import { apiBaseUrl } from '../constants';
 import { updatePatient, useStateValue } from '../state';
 
 const PatientInfoPage = () => {
-  const [{ patients }, dispatch] = useStateValue();
+  const [{ patients, diagnoses }, dispatch] = useStateValue();
   const { id } = useParams<{ id: string }>();
 
   const getGenderIcon = (g: Gender): SemanticICONS | undefined => {
@@ -45,6 +45,22 @@ const PatientInfoPage = () => {
       <div>ssn: {patients[id].ssn}</div>
       <div>occupation: {patients[id].occupation}</div>
       <div>date of birth: {patients[id].dateOfBirth}</div>
+      {patients[id].entries?.length > 0 && (
+        <>
+          <Divider hidden/>
+          <h4>entries</h4>
+          {patients[id].entries.map(e => (
+            <div key={e.id}>
+              <div>{e.date} <i>{e.description}</i></div>
+              <ul>
+                {e.diagnosisCodes?.map(d => (
+                  <li key={d}>{d} {diagnoses[d].name} <i>{diagnoses[d].latin}</i></li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </>
+      )}
     </div>
   );
   else return (

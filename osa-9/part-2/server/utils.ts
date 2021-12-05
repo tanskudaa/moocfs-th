@@ -1,4 +1,4 @@
-import { Gender, PatientEntry } from './types';
+import { Entry, Gender, Patient } from './types';
 
 type Fields = {
     name: unknown,
@@ -6,10 +6,7 @@ type Fields = {
     ssn: unknown,
     gender: unknown,
     occupation: unknown,
-    /*
-     * TODO
-     */
-    // entries: unknown
+    entries: unknown
 };
 
 const isString = (param: unknown): param is string => {
@@ -26,42 +23,59 @@ const isGender = (param: any): param is Gender => {
 };
 
 const parseName = (name: unknown): string => {
-    if (!name || !isString(name)) throw new Error('Incorrect or missing name');
-    else return String(name);
+  if (!name || !isString(name)) throw new Error('Incorrect or missing name');
+  else return String(name);
 };
 
 const parseDateOfBirth = (dateOfBirth: unknown): string => {
-    return parseName(dateOfBirth);
+  return parseName(dateOfBirth);
 };
 
 const parseSsn = (ssn: unknown): string => {
-    return parseName(ssn);
+  return parseName(ssn);
 };
 
 const parseGender = (gender: unknown): Gender => {
-    if (!gender || !isGender(gender)) throw new Error('Incorrect or missing gender');
-    else return gender;
+  if (!gender || !isGender(gender)) throw new Error('Incorrect or missing gender');
+  else return gender;
 };
 
 const parseOccupation = (occupation: unknown): string => {
-    return parseName(occupation);
+  return parseName(occupation);
+};
+
+const parseEntries = (entries: unknown): Entry[] => {
+  if (!entries || !Array.isArray(entries)) throw new Error('Entries not an array');
+
+  entries.forEach(e => {
+    /*
+     * This feels dirty, but I can't think of a way to get these values
+     * programmaticaly from ./types.ts
+     * 
+     * They could be assigned to enum in types but that doesn't seem any cleaner
+     */
+    if (![
+        "Hospital",
+        "OccupationalHealthcare",
+        "HealthCheck"
+      ].includes((e as Entry).type)) throw new Error('Incorrect type of entry');
+  });
+
+  return entries.map(e => e as Entry);
 };
 
 const toNewPatientEntry = 
-    ({ name, dateOfBirth, ssn, gender, occupation }: Fields): Omit<PatientEntry, 'id'> => {
-        const newEntry = {
-            name: parseName(name),
-            dateOfBirth: parseDateOfBirth(dateOfBirth),
-            ssn: parseSsn(ssn),
-            gender: parseGender(gender),
-            occupation: parseOccupation(occupation),
-            /*
-             * TODO
-             */
-            entries: []
-        };
-
-        return newEntry;
+  ({ name, dateOfBirth, ssn, gender, occupation, entries }: Fields): Omit<Patient, 'id'> => {
+    const newEntry = {
+      name: parseName(name),
+      dateOfBirth: parseDateOfBirth(dateOfBirth),
+      ssn: parseSsn(ssn),
+      gender: parseGender(gender),
+      occupation: parseOccupation(occupation),
+      entries: parseEntries(entries)
     };
+
+    return newEntry;
+  };
 
 export { isString, isGender, toNewPatientEntry };

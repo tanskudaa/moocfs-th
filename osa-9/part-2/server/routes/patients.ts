@@ -25,10 +25,10 @@ router.post('/', (req, res) => {
      * TODO Has no sensible response for error
      */
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const { name, ssn, dateOfBirth, gender, occupation } = req.body;
+    const { name, ssn, dateOfBirth, gender, occupation, entries } = req.body;
     const newEntry = patientService.addEntry(
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        toNewPatientEntry({ name, ssn, dateOfBirth, gender, occupation })
+        toNewPatientEntry({ name, ssn, dateOfBirth, gender, occupation, entries })
     );
 
     res.json(newEntry);
