@@ -1,37 +1,56 @@
 import patientData from '../data/patients';
 import { v1 as uuid } from 'uuid';
-import { NonSensitivePatientEntry, Patient } from '../types';
-import { toNewPatientEntry } from '../utils';
+import { NonSensitivePatient, Patient, Entry } from '../types';
+import { toNewPatient } from '../utils';
 
 const patients: Patient[] = patientData.map(a => (
     {
-        // ID's in JSON are now discarded
-        id: uuid(),
-        ...toNewPatientEntry(a)
+        id: uuid(), // ID's in JSON are now discarded
+        ...toNewPatient(a)
     }
 ));
 
 
-const removeSensitiveInfo = (p: Patient): NonSensitivePatientEntry => {
+const removeSensitivePatientFields = (p: Patient): NonSensitivePatient => {
     const { id, name, dateOfBirth, gender, occupation } = p;
     return { id, name, dateOfBirth, gender, occupation };
 };
 
-const getEntries = (): Array<Patient> => patients;
+// Ambiguously named, since patinets have entries-field
+const getPatients = (): Array<Patient> => patients;
 
-const getEntryById = (id: string): Patient | undefined => {
+const getPatientsNonSensitive = (): NonSensitivePatient[] => {
+    return patients.map((a: Patient) => removeSensitivePatientFields(a));
+};
+
+const getPatientById = (id: string): Patient | undefined => {
     return patients.find(p => p.id === id);
 };
 
-const getNonSensitiveEntries = (): NonSensitivePatientEntry[] => {
-    return patients.map((a: Patient) => removeSensitiveInfo(a));
-};
-
-const addEntry = (params: Omit<Patient, 'id'>): NonSensitivePatientEntry => {
-    const newEntry = { ...params, id: uuid() };
+const addPatient = (patient: Omit<Patient, 'id'>): NonSensitivePatient => {
+    const newEntry = { ...patient, id: uuid() };
     patients.push(newEntry);
-    return removeSensitiveInfo(newEntry);
+    return removeSensitivePatientFields(newEntry);
+};
+
+const addEntryToPatient = (id: string, entry: Entry): Entry => {
+    /*
+     * TODO not tested
+     */
+    const patient = getPatientById(id);
+    if (patient) {
+        patient.entries.push(entry);
+        return entry;
+    } else {
+        throw new Error('invalid id');
+    }
 };
 
 
-export default { getEntries, getEntryById, getNonSensitiveEntries, addEntry };
+export default {
+    getPatients,
+    getPatientById,
+    getPatientsNonSensitive,
+    addPatient,
+    addEntryToPatient
+};

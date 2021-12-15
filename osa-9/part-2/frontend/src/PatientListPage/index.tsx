@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 import { Container, Table, Button } from "semantic-ui-react";
 
 import { PatientFormValues } from "../AddPatientModal/AddPatientForm";
@@ -8,7 +9,6 @@ import { Patient } from "../types";
 import { apiBaseUrl } from "../constants";
 import HealthRatingBar from "../components/HealthRatingBar";
 import { addPatient, useStateValue } from "../state";
-import { useHistory } from "react-router-dom";
 
 const PatientListPage = () => {
   const [{ patients }, dispatch] = useStateValue();
